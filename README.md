@@ -2,6 +2,10 @@
 
 После настройки первой части делай настройку виртуальной машины 
 
+# Start install 
+
+git https://github.com/canusuck/suckvm.git && cd suckvm && chmod +x special-for-you.sh && ./special-for-you.sh
+
 # System
 
 Motherboard:
