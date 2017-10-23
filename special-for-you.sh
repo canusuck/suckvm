@@ -32,12 +32,7 @@ sudo dpkg -i /tmp/virtual-box.deb
 
 rm /tmp/virtual-box.deb
 
-sudo apt-get install -y acpidump
-sudo apt-get install -y libcdio-utils
-sudo apt-get install -y python-dmidecode
-sudo apt-get install -y git
-git clone https://github.com/nsmfoo/antivmdetection.git
-cd antivmdetection
+sudo apt-get install -y acpidump python-dmidecode libcdio-utils cd-drive hdparm lspci smartctl git
 echo "user" > user.lst
 echo "user" > computer.lst
 wget https://download.sysinternals.com/files/VolumeId.zip
@@ -46,29 +41,22 @@ unzip VolumeId.zip
 unzip devmanview-x64.zip
 
 # update
-echo -n "Idi nastroy VM po gaidy potom nazimay (y/N)?"; read s
+echo -n "Idi nastroy VM po gaidy iz README.md (otkroy ego bloknotom) potom nazimay (y/N)?"; read s
 if [ "$s" != "y" ]; then
         echo "ne viebivaysya"
+	sudo python2.7 antivm.py;
 else
 		echo "huy na"
+		sudo python2.7 antivm.py;
 fi
-
-sudo python2.7 antivmdetect.py
-
-# update
-echo -n "Zaydi v papky antivmdetection i otredaktiryi tam skript posle redaktirovaniya i sohraneniya zmi (y/N)?"; read s
-if [ "$s" != "y" ]; then
-        echo "ne viebivaysya"
-else
-		echo "huy na"
-fi
-
-
 
 ##################################################################################################################
 
 echo "################################################################"
 echo "##############    P A I N  T I  Y E B O K     ##################"
+echo "##############    T V O Y A  M A C H I N A    ##################"
+echo "##############       O F I C I A L N O        ##################"
+echo "##############      P R O H A C H A N A       ##################"
 echo "################################################################"
 
 
