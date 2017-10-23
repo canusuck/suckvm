@@ -58,16 +58,27 @@ Pulse audio (а по хорошему надо ставить на вм VAC ви
 Итак, на установленной системе отключаем лишние службы:
 1) Вырубаем Windows Defender
 2) Вырубаем Windows Update
-3) Вырубаем ASLR:
-[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management] --на последнем пункте правой кнопкой мыши - New - DWORD - набираем MoveImages - ставим значение 00000000
-4) Вырубаем DEP :
-Командная строка от имени админа - пишем bcdedit.exe /set {current} nx AlwaysOff
-[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management] - “MoveImages”=dword:00000000
+3) Вырубаем ASLR: Запускаем ASLR.key из папки suckvm/tools/
+4) Вырубаем DEP : Запускаем DEP.bat из папки suckvm/tools/
 
 Теперь запускаем PowerShell (пуск-стандартные-powershell) от имени админа:
 1) Пишем Set-ExecutionPolicy Unrestricted - жмем enter - соглашаемся на изменение прав
-2) Далее пишем cd C:/antivmdetection - жмем enter
-3) И наконец пишем .\*.ps1 (опять же вместо звездочки название вашего .ps1 файла)
-4) Как только начнут вылазить окна по удалению файлов, можете закрывать PowerShell
+2) Далее пишем cd C:/suckvm - жмем enter
+3) И наконец пишем .\*.ps1 (вместо * пишем <имя вашей машины в виртуалбокс> .ps1)
+4) Как появляются окна по удалению файлов, можете закрывать PowerShell
 
-Усе, на этом вы невье*ически прекрасны
+# Fix не вводить просто так 
+
+dpkg -l | grep virtualbox
+
+====
+
+ii  virtualbox-5.1  5.1.8-111374~Debian~jessie amd64 Oracle VM VirtualBox
+ii  virtualbox-dkms 5.1.6-dfsg-2 all           x86   virtualization solution - kernel module sources for dkms
+
+====
+
+sudo rmmod vboxpci vboxnetadp vboxnetflt vboxdrv
+sudo apt-get purge virtualbox-dkms
+sudo /sbin/vboxconfig
+
