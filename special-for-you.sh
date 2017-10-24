@@ -54,7 +54,7 @@ fi
 
 echo Сейчас выполняй настройку созданого файла Сценария оболочки <DmiSystemProduct>.sh (он создастся в папке) 
 echo Этот скрипт, который будет использоваться на линуксе, перед стартом VM
-ecgo 1) DmiBIOSVersion
+echo 1) DmiBIOSVersion
 echo 2) DmiBoardAssetTag
 echo 3) DmiBoardLocInChass
 echo можешь поменять значения этих параметров
