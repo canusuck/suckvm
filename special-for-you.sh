@@ -12,12 +12,12 @@
 ##################################################################################################################
 
 # update
-echo -n "Pain, da Pain, tot chto s wwh-club, znay ti yebok (y/N)?"; read s
+echo -n "Вы хотите запустить процедуру уджаления неиспользуемых пакетов и обновления системы (y/N)?"; read s
 if [ "$s" != "y" ]; then
-        echo "Pain ti vce ravno yebok hot i nazal net"
+        echo "Процедура запущена"
 		sudo apt-get autoremove && sudo apt-get update && sudo apt-get -y dist-upgrade;
 else
-		echo "Ya tak i znal chto ti yebok"
+		echo "Процедура запущена"
 		sudo apt-get autoremove && sudo apt-get update && sudo apt-get -y dist-upgrade;
 fi
 
@@ -41,14 +41,29 @@ unzip VolumeId.zip
 unzip devmanview-x64.zip
 
 # update
-echo -n "Idi nastroy VM po gaidy iz README.md (otkroy ego bloknotom) potom nazimay (y/N)?"; read s
+echo -n "Произведи настройку виртуальной машины в VirtualBox, не забудь сохраниться, после чего нажимай продолжить (y/N)?"; read s
 if [ "$s" != "y" ]; then
-        echo "ne viebivaysya"
-	sudo python2.7 antivm.py;
+        echo "Патчим виртуальную машину"
+	sudo python3 antivm.py;
 else
-		echo "huy na"
-		sudo python2.7 antivm.py;
+		echo "Патчим виртуальную машину"
+		sudo python3 antivm.py;
 fi
+
+echo Сейчас выполняй настройку созданого файла Сценария оболочки <DmiSystemProduct>.sh (он создастся в папке) 
+echo Этот скрипт, который будет использоваться на линуксе, перед стартом VM
+ecgo 1) DmiBIOSVersion
+echo 2) DmiBoardAssetTag
+echo 3) DmiBoardLocInChass
+echo можешь поменять значения этих параметров
+echo так же посмотри размер своего файла по DSDT только измени данные если что там юзера и имя машины параметры под 1 2 3 пока не троогай спроси меня 
+echo ls -l /sys/firmware/acpi/tables/ | grep DSDT
+echo 1) sudo cp /sys/firmware/acpi/tables/DSDT /home/user/VirtualBox\ VMs/Win71/DSDT
+echo 2) sudo chown user:user /home/user/VirtualBox\ VMs/Win71/DSDT
+echo 3) VBoxManage setextradata Win71 VBoxInternal/Devices/acpi/0/Config/CustomTable /home/user/VirtualBox\ VMs/Win71/DSDT
+
+echo если все номалек то запускай через bash <DmiSystemProduct>.sh имямашины
+
 
 ##################################################################################################################
 
