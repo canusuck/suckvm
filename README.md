@@ -4,7 +4,7 @@
 
 # Start install 
 
-git https://github.com/canusuck/suckvm.git && cd suckvm && chmod +x special-for-you.sh && ./special-for-you.sh
+git clone https://github.com/canusuck/suckvm.git && cd suckvm && chmod +x special-for-you.sh && ./special-for-you.sh
 
 # System
 
