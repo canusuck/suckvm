@@ -32,6 +32,8 @@ sudo dpkg -i /tmp/virtual-box.deb
 
 rm /tmp/virtual-box.deb
 
+sudo usermod -a -G vboxusers user
+
 sudo apt-get install -y acpidump python-dmidecode libcdio-utils cd-drive hdparm lspci smartctl git
 echo "user" > user.lst
 echo "user" > computer.lst
