@@ -1,4 +1,9 @@
 #!/usr/bin/python
+# suckvm
+
+# Tested on Ubuntu 14.04 and 16.04 LTS, using several brands of computers and types..but there is no guarantee that it will work anyway..
+# Prerequisites: python-dmidecode, cd-drive and acpidump: apt-get install python-dmidecode libcdio-utils acpidump mesa-utils
+# Windows binaries: DevManView(32 or 64-bit), Volumeid.exe, a text file with a list of computer/host and one with users.
 
 # Import stuff
 import commands
@@ -18,7 +23,7 @@ for dep in dependencies:
       exit()
 
 # Welcome
-print '--- Generate VirtualBox templates to help thwart VM detection and more .. - Mikael, @nsmfoo ---'
+print 'can u suck btw'
 print '[*] Creating VirtualBox modifications ..'
 
 # Randomize serial
