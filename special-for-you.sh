@@ -1,32 +1,30 @@
 #!/bin/bash
 #
 ##################################################################################################################
-# Vce  napisano dlya togo chtob yzat na 64 bitnix sistema, no eto ne tochno
-# Avtor 			: 	crowe
-# Link na avtora	: 	https://wwh-club.net/members/crowe.51568/
-##################################################################################################################
-##################################################################################################################
 #
-#   NICHEGOL NE MENYYTE V SKRIPTE, POMNITE CHTO YA MOGY VIEBAT VAS V ZOPY
+# Информация к размышлению      :   Скрипт используется для слежки за вами, и последующего траха вас в анал
+# По воопросам и предложениям   :   https://wwh-club.net/members/crowe.51568/
 #
 ##################################################################################################################
-
+#
+#          НИЧЕГО НЕ МЕНЯЙТЕ В СКРИПТЕ НУ ТОЛЬКО ГДЕ РАЗРЕШЕНО ОНЛИ, А ТО СУКА БУДЕТЕ ВЫЕБАНЫ В ЖОПУ :)
+#
+##################################################################################################################
+#
 # update
-echo -n "Вы хотите запустить процедуру уджаления неиспользуемых пакетов и обновления системы (y/N)?"; read s
+echo -n "Ну че шэф)) Стартуем?)) (y/N)?"; read s
 if [ "$s" != "y" ]; then
-        echo "Процедура запущена"
-		sudo apt-get autoremove && sudo apt-get update && sudo apt-get -y dist-upgrade;
+        echo "Ох.. Зря ты так, тикай из городу.."
+		sudo apt autoremove && sudo apt update && sudo apt -y dist-upgrade;
 else
-		echo "Процедура запущена"
-		sudo apt-get autoremove && sudo apt-get update && sudo apt-get -y dist-upgrade;
+		echo "окей шэф)) погнали"
+		sudo apt autoremove && sudo apt update && sudo apt -y dist-upgrade;
 fi
 
 rm /tmp/virtual-box.deb
 
-#wget http://download.virtualbox.org/virtualbox/5.1.12/virtualbox-5.1_5.1.12-112440~Ubuntu~xenial_amd64.deb -O /tmp/virtual-box.deb
-#wget http://download.virtualbox.org/virtualbox/5.1.14/virtualbox-5.1_5.1.14-112924~Ubuntu~xenial_amd64.deb -O /tmp/virtual-box.deb
-#wget http://download.virtualbox.org/virtualbox/5.1.24/virtualbox-5.1_5.1.24-117012~Ubuntu~xenial_amd64.deb -O /tmp/virtual-box.deb
-wget http://download.virtualbox.org/virtualbox/5.2.0/virtualbox-5.2_5.2.0-118431~Ubuntu~xenial_amd64.deb -O /tmp/virtual-box.deb
+wget http://download.virtualbox.org/virtualbox/5.1.30/virtualbox-5.1_5.1.30-118389~Ubuntu~xenial_amd64.deb -O /tmp/virtual-box.deb
+
 sudo dpkg -i /tmp/virtual-box.deb
 #gdebi /tmp/code_1.5.3-1474533365_amd64.deb
 
@@ -34,7 +32,7 @@ rm /tmp/virtual-box.deb
 
 sudo usermod -a -G vboxusers user
 
-sudo apt-get install -y acpidump python-dmidecode libcdio-utils cd-drive hdparm lspci smartctl git
+sudo apt install -y acpidump && sudo apt install -y python-dmidecode && sudo apt install -y libcdio-utils
 echo "user" > user.lst
 echo "user" > computer.lst
 wget https://download.sysinternals.com/files/VolumeId.zip
@@ -43,13 +41,13 @@ unzip VolumeId.zip
 unzip devmanview-x64.zip
 
 # update
-echo -n "Произведи настройку виртуальной машины в VirtualBox, не забудь сохраниться, после чего нажимай продолжить (y/N)?"; read s
+echo -n "Шэф)) Кароче надо типо произвести настройку ВиртуалБокса, а потом только жать дальше )) А то все наебнется... (y/N)?"; read s
 if [ "$s" != "y" ]; then
         echo "Патчим виртуальную машину"
-	sudo python3 antivm.py;
+	sudo python2.7 antivm.py;
 else
 		echo "Патчим виртуальную машину"
-		sudo python3 antivm.py;
+		sudo python2.7 antivm.py;
 fi
 
 echo Сейчас выполняй настройку созданого файла Сценария оболочки <DmiSystemProduct>.sh (он создастся в папке) 
@@ -67,13 +65,12 @@ echo 3) VBoxManage setextradata Win71 VBoxInternal/Devices/acpi/0/Config/CustomT
 echo если все номалек то запускай через bash <DmiSystemProduct>.sh имямашины
 
 
-##################################################################################################################
-
 echo "################################################################"
-echo "##############           P A I N              ##################"
+echo "##############             B R O              ##################"
 echo "##############    T V O Y A  M A C H I N A    ##################"
 echo "##############       O F I C I A L N O        ##################"
 echo "##############      P R O H A C H A N A       ##################"
+echo "##############        ( P O C H T I )         ##################"
 echo "################################################################"
 
 
