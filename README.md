@@ -2,11 +2,11 @@
 
 После настройки первой части делай настройку виртуальной машины 
 
-# Start install 
+# 1. Start install 
 
 git clone https://github.com/canusuck/suckvm.git && cd suckvm && chmod +x special-for-you.sh && ./special-for-you.sh
 
-# 2. Настройка VM (после перезагрузки)
+# 2. Настройка VM 
 
 Создаем виртуальную Win7 (64bit)
 
