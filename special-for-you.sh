@@ -32,7 +32,7 @@ rm /tmp/virtual-box.deb
 
 sudo usermod -a -G vboxusers user
 
-sudo apt install -y acpidump && sudo apt install -y python-dmidecode && sudo apt install -y libcdio-utils
+sudo apt install -y acpidump && sudo apt install -y python-dmidecode && sudo apt install -y libcdio-utils && sudo apt install -y mesa-utils
 echo "user" > user.lst
 echo "user" > computer.lst
 wget https://download.sysinternals.com/files/VolumeId.zip
