@@ -67,7 +67,7 @@ Pulse audio (рекомендую использовать на виртуаль
 2) DmiBoardAssetTag 
 3) DmiBoardLocInChass
 
-sh <DmiSystemProduct> .sh <имя вашей машины в виртуалбокс> 
+bash <DmiSystemProduct>.sh <имя вашей машины в виртуалбокс> 
 
 # Устанавливаем Windows
 
