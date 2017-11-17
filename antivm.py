@@ -1,11 +1,18 @@
 #!/usr/bin/python
-# suckvm
+#
+##################################################################################################################
+#
+# Информация к размышлению      :   Скрипт используется для слежки за вами, и последующего траха вас в анал
+# По воопросам и предложениям   :   https://wwh-club.net/members/crowe.51568/
+#
+##################################################################################################################
+#
+#          НИЧЕГО НЕ МЕНЯЙТЕ В СКРИПТЕ НУ ТОЛЬКО ГДЕ РАЗРЕШЕНО ОНЛИ, А ТО СУКА БУДЕТЕ ВЫЕБАНЫ В ЖОПУ :)
+#
+##################################################################################################################
+#
 
-# Tested on Ubuntu 14.04 and 16.04 LTS, using several brands of computers and types..but there is no guarantee that it will work anyway..
-# Prerequisites: python-dmidecode, cd-drive and acpidump: apt-get install python-dmidecode libcdio-utils acpidump mesa-utils
-# Windows binaries: DevManView(32 or 64-bit), Volumeid.exe, a text file with a list of computer/host and one with users.
-
-# Import stuff
+# Импорт
 import commands
 import os.path
 import dmidecode
@@ -15,18 +22,18 @@ import re
 import time
 import StringIO
 
-# Check dependencies
+# Проверка зависимостей
 dependencies = ["/usr/bin/cd-drive", "/usr/bin/acpidump", "/usr/share/python-dmidecode", "DevManView.exe", "Volumeid.exe", "computer.lst", "user.lst", "/usr/bin/glxinfo"]
 for dep in dependencies:
     if not (os.path.exists(dep)):
-      print "[WARNING] Dependencies are missing, please verify that you have installed:", dep
+      print "[ПРЕДУПРЕЖДЕНИЕ] Шэф) кажись зависимости отсутствуют, надо бы решить проблему:", dep
       exit()
 
-# Welcome
-print 'can u suck btw'
-print '[*] Creating VirtualBox modifications ..'
+# Добропожаловать
+print 'Че каго? Как жизнь?'
+print '[*] Создаем изменения шэф))..'
 
-# Randomize serial
+# Случайный серийный номер
 def serial_randomize(start=0, string_length=10):
     rand = str(uuid.uuid4())
     rand = rand.upper()
@@ -51,7 +58,7 @@ except:
     dmi_info['DmiBIOSReleaseMajor'] = '** No value to retrieve **'
     dmi_info['DmiBIOSReleaseMinor'] = '** No value to retrieve **'
 
-# python-dmidecode does not currently reveal all values .. this is plan B
+# python-dmidecode в настоящее время не показывает все значения.. поэтому это план Б
 dmi_firmware = commands.getoutput("dmidecode -t0")
 try:
     dmi_info['DmiBIOSFirmwareMajor'], dmi_info['DmiBIOSFirmwareMinor'] = re.search(
@@ -67,18 +74,18 @@ for v in dmidecode.baseboard().values():
         dmi_info['DmiBoardProduct'] = "string:" + v['data']['Product Name']
         dmi_info['DmiBoardVendor'] = v['data']['Manufacturer']
 
-# This is hopefully not the best solution ..
+# Я надеюсь что есть лучше, но все же...
 try:
     s_number = []
     if serial_number:
-        # Get position
+        # Получение
         if '/' in serial_number:
             for slash in re.finditer('/', serial_number):
                 s_number.append(slash.start(0))
-                # Remove / from string
+                # Удаление из строки
                 new_serial = re.sub('/', '', serial_number)
                 new_serial = serial_randomize(0, len(new_serial))
-            # Add / again
+            # Добавляем / опять..
             for char in s_number:
                 new_serial = new_serial[:char] + '/' + new_serial[char:]
         else:
@@ -90,7 +97,7 @@ except:
 
 dmi_info['DmiBoardSerial'] = new_serial
 
-# python-dmidecode does not reveal all values .. this is plan B
+# python-dmidecode не показывает все значения.. поэтому это план Б
 dmi_board = commands.getoutput("dmidecode -t2")
 try:
     asset_tag = re.search("Asset Tag: ([0-9A-Za-z ]*)", dmi_board).group(1)
@@ -106,7 +113,7 @@ except:
 
 dmi_info['DmiBoardLocInChass'] = loc_chassis
 
-# Based on the list from http://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.0.0.pdf
+# На основе этого списка http://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.0.0.pdf
 board_dict = {'Unknown': 1, 'Other': 2, 'Server Blade': 3, 'Connectivity Switch': 4, 'System Management Module': 5,
               'Processor Module': 6, 'I/O Module': 7, 'Memory Module': 8, 'Daughter board': 9, 'Motherboard': 10,
               'Processor/Memory Module': 11, 'Processor/IO Module': 12, 'Interconnect board': 13}
@@ -132,10 +139,10 @@ if not system_family:
 else:
     dmi_info['DmiSystemFamily'] = system_family
 
-# Create a new UUID
+# Создаем новый UUID
 newuuid = str(uuid.uuid4())
 dmi_info['DmiSystemUuid'] = newuuid.upper()
-# Create a new system serial number
+# Создаем новый серийник системы
 dmi_info['DmiSystemSerial'] = (serial_randomize(0, len(system_serial)))
 
 for v in dmidecode.chassis().values():
@@ -144,7 +151,7 @@ for v in dmidecode.chassis().values():
     dmi_info['DmiChassisVersion'] = v['data']['Version']
     dmi_info['DmiChassisType'] = v['data']['Type']
 
-# Based on the list from http://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.0.0.pdf
+# На основе этого списка собственно http://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.0.0.pdf
 chassi_dict = {'Other': 1, 'Unknown': 2, 'Desktop': 3, 'Low Profile Desktop': 4, 'Pizza Box': 5, 'Mini Tower': 6,
                'Tower': 7, 'Portable': 8, 'Laptop': 9, 'Notebook': 10, 'Hand Held': 11, 'Docking Station': 12,
                'All in One': 13, 'Sub Notebook': 14, 'Space-saving': 15, 'Lunch Box': 16, 'Main Server Chassis': 17,
@@ -154,20 +161,20 @@ chassi_dict = {'Other': 1, 'Unknown': 2, 'Desktop': 3, 'Low Profile Desktop': 4,
 
 dmi_info['DmiChassisType'] = str(chassi_dict.get(dmi_info['DmiChassisType']))
 
-# python-dmidecode does not reveal all values .. this is plan B
+# python-dmidecode опять план б 
 chassi = commands.getoutput("dmidecode -t3")
 try:
     dmi_info['DmiChassisAssetTag'] = re.search("Asset Tag: ([0-9A-Za-z ]*)", chassi).group(1)
 except:
     dmi_info['DmiChassisAssetTag'] = '** No value to retrieve **'
 
-# Create a new chassi serial number
+# Создаем новый серийник для шасси
 dmi_info['DmiChassisSerial'] = "string:" + (serial_randomize(0, len(chassi_serial)))
 
 for v in dmidecode.processor().values():
     dmi_info['DmiProcVersion'] = v['data']['Version']
     dmi_info['DmiProcManufacturer'] = v['data']['Manufacturer']['Vendor']
-# OEM strings
+# OEM строчки
 try:
     for v in dmidecode.type(11).values():
         oem_ver = v['data']['Strings']['3']
@@ -181,7 +188,7 @@ except:
     dmi_info['DmiOEMVBoxVer'] = '** No value to retrieve **'
     dmi_info['DmiOEMVBoxRev'] = '** No value to retrieve **'
 
-# Write all data collected so far to file
+# Данные собранные до этого момента
 if dmi_info['DmiSystemProduct']:
     file_name = dmi_info['DmiSystemProduct'].replace(" ", "").replace("/", "_") + '.sh'
 else:
@@ -203,14 +210,14 @@ for k, v in sorted(dmi_info.iteritems()):
         logfile.write('# VBoxManage setextradata "$1" VBoxInternal/Devices/pcbios/0/Config/' + k + '\t' + v + '\n')
     else:
         logfile.write('VBoxManage setextradata "$1" VBoxInternal/Devices/pcbios/0/Config/' + k + '\t\'' + v + '\'\n')
-# Disk information
+# Информация о диске
 disk_dmi = {}
 try:
     if os.path.exists("/dev/sda"):
-        # Disk serial
+        # Сирийник диска
         disk_serial = commands.getoutput("hdparm -i /dev/sda | grep -o 'SerialNo=[A-Za-z0-9_\+\/ .\"-]*' | awk -F= '{print $2}'")
         if 'SG_IO' in disk_serial:
-          print '[WARNING] Unable to aquire the disk serial number! Will add one, but please try to run this script on another machine instead..'
+          print '[ПРЕДУПРЕЖДЕНИЕ] Шэф) Номер диска получить не могу.. Добавим тебе один, но лучше запусти скрипт на другой машине..'
           disk_serial = 'HUA721010KLA330'
 
         disk_dmi['SerialNumber'] = (serial_randomize(0, len(disk_serial)))
@@ -218,7 +225,7 @@ try:
         if (len(disk_dmi['SerialNumber']) > 20):
             disk_dmi['SerialNumber'] = disk_dmi['SerialNumber'][:20]
 
-        # Check for HP Legacy RAID
+        # Проверка на наличие RAID-массива HP Legacy
     elif os.path.exists("/dev/cciss/c0d0"):
         hp_old_raid = commands.getoutput("smartctl -d cciss,1 -i /dev/cciss/c0d0")
         disk_serial = re.search("Serial number:([0-9A-Za-z ]*)", hp_old_raid).group(1).replace(" ", "")
@@ -231,7 +238,7 @@ except OSError:
     print "Haz RAID?"
     print commands.getoutput("lspci | grep -i raid")
 
-# Disk firmware rev
+# версия прошивки диска
 try:
     if os.path.exists("/dev/sda"):
         disk_fwrev = commands.getoutput(
@@ -245,11 +252,11 @@ except OSError:
     print commands.getoutput("lspci | grep -i raid")
 
 if 'SG_IO' in disk_dmi['FirmwareRevision']:
-    print '[WARNING] Unable to aquire the disk firmware revision! Will add one, but please try to run this script on another machine instead..'
+    print '[ПРЕДУПРЕЖДЕНИЕ] Шэф) Версию прошивки диска не могу получить.. Добавим тебе один, но лучше запусти скрипт на другой машине..'
     disk_dmi['FirmwareRevision'] = 'LMP07L3Q'
     disk_dmi['FirmwareRevision'] = (serial_randomize(0, len(disk_dmi['FirmwareRevision'])))
 
-# Disk model number
+# Номер модели диска
 try:
     if os.path.exists("/dev/sda"):
         disk_modelno = commands.getoutput(
@@ -263,7 +270,7 @@ except OSError:
     print commands.getoutput("lspci | grep -i raid")
 
 if 'SG_IO' in disk_dmi['ModelNumber']:
-    print '[WARNING] Unable to aquire the disk model number! Will add one, but please try to run this script on another machine instead..'
+    print '[ПРЕДУПРЕЖДЕНИЕ] Шэф) Не удалось получить версию модели диска.. Добавим тебе один, но лучше запусти скрипт на другой машине..'
     disk_vendor = 'SAMSUNG'
     disk_vendor_part1 = 'F8E36628D278'
     disk_vendor_part1 = (serial_randomize(0, len(disk_vendor_part1)))
@@ -290,7 +297,7 @@ for k, v in disk_dmi.iteritems():
         logfile.write('VBoxManage setextradata "$1" VBoxInternal/Devices/ahci/0/Config/Port0/' + k + '\t\'' + v + '\'\n')
 logfile.write('fi\n')
 
-# CD-ROM information
+# Информация о CD-ROM
 cdrom_dmi = {}
 if os.path.islink('/dev/cdrom'):
     # CD-ROM serial
@@ -301,21 +308,21 @@ if os.path.islink('/dev/cdrom'):
     else:
         cdrom_dmi['ATAPISerialNumber'] = "** No value to retrieve **"
 
-    # CD-ROM firmeware rev
+    # Версия прошивки CD-ROM
     cdrom_fwrev = commands.getoutput("cd-drive | grep Revision | grep  ':' | awk {' print $3 \" \" $4'}")
     cdrom_dmi['ATAPIRevision'] = cdrom_fwrev.replace(" ", "")
 
-    # CD-ROM Model numberA-Za-z0-9_\+\/ .\"-
+    # CD-ROM номер модели A-Za-z0-9_\+\/ .\"-
     cdrom_modelno = commands.getoutput("cd-drive | grep Model | grep  ':' | awk {' print $3 \" \" $4'}")
     cdrom_dmi['ATAPIProductId'] = cdrom_modelno
 
-    # CD-ROM Vendor
+    # CD-ROM Марка
     cdrom_vendor = commands.getoutput("cd-drive | grep Vendor | grep  ':' | awk {' print $3 '}")
     cdrom_dmi['ATAPIVendorId'] = cdrom_vendor
 else:
     logfile.write('# No CD-ROM detected: ** No values to retrieve **\n')
 
-# And some more
+# И еще не множко..
 if os.path.islink('/dev/cdrom'):
 
  logfile.write('if [[ -z "$controller" ]]; then\n')
@@ -335,8 +342,8 @@ if os.path.islink('/dev/cdrom'):
         logfile.write('VBoxManage setextradata "$1" VBoxInternal/Devices/ahci/0/Config/Port1/' + k + '\t\'' + v + '\'\n')
  logfile.write('fi\n')
 
-# Get and write DSDT image to file
-print '[*] Creating a DSDT file...'
+# Собственно все что собрали выше, хуярим в DSDT
+print '[*] Создание DSDT файла...'
 if dmi_info['DmiSystemProduct']:
     dsdt_name = 'DSDT_' + dmi_info['DmiSystemProduct'].replace(" ", "").replace("/", "_") + '.bin'
     os.system("dd if=/sys/firmware/acpi/tables/DSDT of=" + dsdt_name + " >/dev/null 2>&1")
@@ -352,7 +359,7 @@ acpi_facp = commands.getoutput('acpidump -s | grep FACP | grep -o "\(([A-Za-z0-9
 
 if "option requires" in acpi_dsdt:
     acpi_error = commands.getoutput("lsb_release -r | awk {' print $2 '}")
-    print "The version of acpidump included in", acpi_error, 'is not supported'
+    print "Версия acpidump включена в", acpi_error, 'не поддерживается шэф :('
     exit()
 else:
     acpi_list_dsdt = acpi_dsdt.split(' ')
@@ -366,7 +373,7 @@ logfile.write('VBoxManage setextradata "$1" VBoxInternal/Devices/acpi/0/Config/A
 logfile.write('VBoxManage setextradata "$1" VBoxInternal/Devices/acpi/0/Config/AcpiCreatorId\t\'string:' + acpi_list_dsdt[4] + '\'\n')
 logfile.write('VBoxManage setextradata "$1" VBoxInternal/Devices/acpi/0/Config/AcpiCreatorRev\t\'' + acpi_list_dsdt[5] + '\'\n')
 
-# Randomize MAC address, based on the host interface MAC
+# Рандомизация MAC адреса, основанный на MAC интерфейса хоста, о как)
 mac_seed = ':'.join(re.findall('..', '%012x' % uuid.getnode()))[0:9]
 big_mac = mac_seed + "%02x:%02x:%02x" % (
     random.randint(0, 255),
@@ -376,7 +383,7 @@ big_mac = mac_seed + "%02x:%02x:%02x" % (
 le_big_mac = re.sub(':', '', big_mac)
 logfile.write('VBoxManage modifyvm "$1" --macaddress1\t' + le_big_mac + '\n')
 
-# Copy and set the CPU brand string
+# Собтвенно копируем и устанавливаем название CPU модели
 cpu_brand = commands.getoutput("cat /proc/cpuinfo | grep -m 1 'model name' | cut -d  ':' -f2 | sed 's/^ *//'")
 
 if len(cpu_brand) < 47:
@@ -395,47 +402,47 @@ while i<=47:
           logfile.write('VBoxManage setextradata "$1" VBoxInternal/CPUM/HostCPUID/' + e + '/' + r + '  0x' +rebrand + '\t\n')
          i=i+4
 
-# Check the numbers of CPUs, should be 2 or more
+# Чекаем на количество процессоров в виртуальной машине больше ли 2
 logfile.write('cpu_count=$(VBoxManage showvminfo --machinereadable "$1" | grep cpus=[0-9]* | sed "s/cpus=//")\t\n')
-logfile.write('if [ $cpu_count -lt "2" ]; then echo "[WARNING] CPU count is less than 2. Consider adding more!"; fi\t\n')
+logfile.write('if [ $cpu_count -lt "2" ]; then echo "[ПРЕДУПРЕЖДЕНИЕ] Бро хотябы 2 ядра надо, так что давай выставляй 2 или более"; fi\t\n')
 
-# Check the set memory size. If it's less them 2GB notify user
+# Так же проверяю больше ли 2ГБ памяти ты выделил машине или нет, если нет дам пизды
 logfile.write('memory_size=$(VBoxManage showvminfo --machinereadable "$1" | grep memory=[0-9]* | sed "s/memory=//")\t\n')
-logfile.write('if [ $memory_size -lt "2048" ]; then echo "[WARNING] Memory size is 2GB or less. Consider adding more memory!"; fi\t\n')
+logfile.write('if [ $memory_size -lt "2048" ]; then echo "[ПРЕДУПРЕЖДЕНИЕ] Бро мало памяти выделил для машины, давай 2гб или более!"; fi\t\n')
 
-# Check if hostonlyifs IP address is the default
+# Чекаем является ли хостовой ИП, ИП адресом по умолчанию 
 logfile.write('hostint_ip=$(VBoxManage list hostonlyifs | grep IPAddress: | awk {\' print $2 \'})\t\n')
-logfile.write('if [ $hostint_ip == \'192.168.56.1\' ]; then echo "[WARNING] You are using the default IP/IP-range. Consider changing the IP and the range used!"; fi\t\n')
+logfile.write('if [ $hostint_ip == \'192.168.56.1\' ]; then echo "[ПРЕДУПРЕЖДЕНИЕ] Бро ты используешь IP / IP-диапазон по умолчанию. Бро подумай об изменении IP и используемого диапазона!"; fi\t\n')
 
-# Check witch paravirtualization interface is being used (Setting it to "none" will mitigate the "cpuid feature" check)
+# Чекаем настройки паравиртуализации (Setting it to "none" will mitigate the "cpuid feature" check)
 logfile.write('virtualization_type=$(VBoxManage showvminfo --machinereadable "$1" | grep -i ^paravirtprovider | cut -d "=" -f2 | sed s\'/"//g\')\t\n')
-logfile.write('if [ ! $virtualization_type == \'none\' ]; then echo "[WARNING] Please switch paravirtualization interface to: None!"; fi\t\n')
+logfile.write('if [ ! $virtualization_type == \'none\' ]; then echo "[ПРЕДУПРЕЖДЕНИЕ] Бро переключи режим паравиртуализации на: None (нет)"; fi\t\n')
 
-# Check if audio support is enabled
+# Чекаем включен ли звук
 logfile.write('audio=$(VBoxManage showvminfo --machinereadable "$1" | grep audio | cut -d "=" -f2 | sed \'s/"//g\')\t\n')
-logfile.write('if [ $audio == "none" ]; then echo "[WARNING] Please consider adding an audio device!"; fi\t\n')
+logfile.write('if [ $audio == "none" ]; then echo "[ПРЕДУПРЕЖДЕНИЕ] Бро аудиоустройство забыл добавить в виртуалку, продумай момент"; fi\t\n')
 
-# Check if you have the correct DevManview binary for the target architecture
+# Чекаем, правильный ли ты DevManview скачал для своей архитектуры бро
 logfile.write('devman_arc=$(VBoxManage showvminfo --machinereadable "$1" | grep ostype | cut -d "=" -f2 | grep -o "(.*)" | sed \'s/(//;s/)//;s/-bit//\')\t\n')
 logfile.write('arc_devman=$(file -b DevManView.exe | grep -o \'80386\|64\' | sed \'s/80386/32/\')\t\n')
-logfile.write('if [ $devman_arc != $arc_devman ]; then echo "[WARNING] Please use the DevManView version that coresponds to the guest architecture: $devman_arc "; fi\t\n')
+logfile.write('if [ $devman_arc != $arc_devman ]; then echo "[ПРЕДУПРЕЖДЕНИЕ] Пожалуйста бро используй DevManView своей архитектуры там x64 или x86: $devman_arc "; fi\t\n')
 
-# Done!
+# Все заебись!
 logfile.close()
 
-print '[*] Finished: A template shell script has been created named:', file_name
-print '[*] Finished: A DSDT dump has been created named:', dsdt_name
+print '[*] Завершён: Был создан сценарий оболочки шаблона с именем:', file_name
+print '[*] Завершён: Создался DSDT дамп с именем:', dsdt_name
 
-# Check file size
+# Проверяем размер файла DSDT
 try:
     if os.path.getsize(dsdt_name) > 64000:
-        print "[WARNING] Size of the DSDT file is too large (> 64k). Try to build the template from another computer"
+        print "[ПРЕДУПРЕЖДЕНИЕ] Размер файла DSDT слишком велик (> 64k). Попробуйте создать шаблон с другого компьютера"
 except:
     pass
 
-print '[*] Creating guest based modification file (to be run inside the guest)...'
+print '[*] Создание гостевого файла модификации (для запуска внутри гостевой ос) ...'
 
-# Write all data to file
+# Записываем все данные в файл
 if dmi_info['DmiSystemProduct']:
     file_name = dmi_info['DmiSystemProduct'].replace(" ", "").replace("/", "_") + '.ps1'
 else:
@@ -443,13 +450,13 @@ else:
 
 logfile = file(file_name, 'w+')
 
-# Tested on DELL, Lenovo clients and HP (old) server hardware, running Windows natively
+# На чем протестированно, DELL, Lenovo ну и на старье HP, под виндой все
 if 'DELL' in acpi_list_dsdt[1]:
       manu = acpi_list_dsdt[1] + '__'
 else:
   manu = acpi_list_dsdt[1]
 
-# OS version - W7 or W10
+# Версия OS собственно – Win7 или Win10 кароче 
 logfile.write('$version = (Get-WmiObject win32_operatingsystem).version\r\n')
 
 # DSDT
@@ -496,14 +503,14 @@ logfile.write('Copy-Item -Path HKLM:\HARDWARE\ACPI\RSDT\\' + manu + '\\' + acpi_
 logfile.write('Remove-Item -Path HKLM:\HARDWARE\ACPI\RSDT\\' + manu + '\\' + acpi_list_dsdt[2] + '___\\00000001 -Recurse\r\n')
 logfile.write('}\r\n')
 
-# W10 specific settings:
+# Настройки только для Win10:
 logfile.write('if ($version  -like \'10.0*\') {\r\n')
-# SDDT .. very beta ..
+# SDDT .. в разработке как бы, да похуй..
 new_SDDT1 = commands.getoutput("sudo acpidump -s | grep SSDT | grep -o '\(([A-Za-z0-9].*)\)' | grep '00001000' | head -n 1 | awk {' print $2 '}")
 new_SDDT2 = commands.getoutput("sudo acpidump -s | grep SSDT | grep -o '\(([A-Za-z0-9].*)\)' | grep '00001000' | head -n 1 | awk {' print $3 '}")
 new_SDDT3 = commands.getoutput("sudo acpidump -s | grep SSDT | grep -o '\(([A-Za-z0-9].*)\)' | grep '00001000' | head -n 1 | awk {' print $4 '}")
 
-# Check if the key is present.. apparently it is not always the case? Feedback welcome
+# Кароче чекните присутствует ли ключь, рад вашей обратной связи, я вас <3
 logfile.write('$check_exist = (Test-Path HKLM:\HARDWARE\ACPI\SSDT)\r\n')
 logfile.write('if ($check_exist) {\r\n')
 logfile.write('Copy-Item -Path HKLM:\HARDWARE\ACPI\SSDT\VBOX__ -Destination HKLM:\HARDWARE\ACPI\SSDT\\' + new_SDDT1 + ' -Recurse\r\n')
@@ -514,10 +521,10 @@ logfile.write('Copy-Item -Path HKLM:\HARDWARE\ACPI\SSDT\\' + new_SDDT1 + '\\' + 
 logfile.write('Remove-Item -Path HKLM:\HARDWARE\ACPI\SSDT\\' + new_SDDT1 + '\\' + new_SDDT2 + '___\\00000002 -Recurse\r\n')
 logfile.write('}\r\n}\r\n')
 
-# SystemBiosVersion - TODO: get real values
+# SystemBiosVersion - TODO: Получение реальных значений типо
 logfile.write('New-ItemProperty -Path HKLM:\HARDWARE\DESCRIPTION\System -Name SystemBiosVersion -Value "'+ acpi_list_dsdt[1] + ' - ' + acpi_list_dsdt[0] + '" -PropertyType "String" -force\r\n')
 
-# VideoBiosVersion - TODO: get real values
+# VideoBiosVersion - TODO: Получение реальных значений типо
 logfile.write('New-ItemProperty -Path HKLM:\HARDWARE\DESCRIPTION\System -Name VideoBiosVersion -Value "' + acpi_list_dsdt[0] + '" -PropertyType "String" -force\r\n')
 
 # SystemBiosDate
@@ -526,9 +533,9 @@ if len(d_year) > 2:
     d_year = d_year[2:]
 logfile.write('New-ItemProperty -Path HKLM:\HARDWARE\DESCRIPTION\System -Name SystemBiosDate -Value "' + d_month + '/' + d_day + '/' + d_year + '" -PropertyType "String" -force\r\n')
 
-# OS Install Date (InstallDate)
+# Дата установки операционной системы (InstallDate)
 format = '%m/%d/%Y %I:%M %p'
-start = "1/1/2012 5:30 PM"
+start = "1/1/2013 6:08 PM"
 end = time.strftime("%m/%d/%Y %I:%M %p")
 prop = random.random()
 stime = time.mktime(time.strptime(start, format))
@@ -541,7 +548,7 @@ logfile.write('New-ItemProperty -Path \"HKCU:\SOFTWARE\Microsoft\Internet Explor
 machineGuid = str(uuid.uuid4())
 logfile.write('New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Cryptography -Name MachineGuid -Value "' + machineGuid + '" -PropertyType "String" -force\r\n')
 
-# W10 specific settings:
+# Опять только пон Win10:
 logfile.write('if ($version  -like \'10.0*\') {\r\n')
 # DacType
 new_dactype1 = commands.getoutput("lspci | grep -i VGA | cut -d ':' -f3 | awk {' print $1 '}")
@@ -560,11 +567,11 @@ new_chiptype1 = commands.getoutput("glxinfo -B | grep 'OpenGL renderer string' |
 new_chiptype2 = commands.getoutput("glxinfo -B | grep 'OpenGL renderer string' | cut -d ':' -f2 | sed  's/Mesa DRI//' | awk {' print $2 '} ")
 
 if 'Error: unable to open display' in new_chiptype1:
-    print "[WARNING] Unable to retrieve correct information! You are probably using a server distribution. Will add some semi correct data ... "
+    print "[ПРЕДУПРЕЖДЕНИЕ] Невозможно получить правильную информацию! Вероятно, вы используете дистрибутив сервера. Будут добавлены некоторые 50 на 50 правильные данные ..."
     new_chiptype1 = commands.getoutput("lshw -c video | grep -i vendor: | awk ' { print  $2 } '")
     new_chiptype2 = commands.getoutput("lshw -c video | grep -i vendor: | awk ' { print  $3 } '")
 
-# Having access to only a limited amount of native Windows 10 installed hardware, I have at least noted that W10 reports Sandybridge/Ivybridge for systems that gxlinfo reports being equipped with Ivybridge.
+# Кароче не так много тестов под вин10 что сообщается
 if 'Ivybridge' in new_chiptype2:
     new_chiptype2 = 'Sandybridge/Ivybridge'
 
@@ -587,7 +594,7 @@ logfile.write('New-ItemProperty -Path HKLM:\SYSTEM\ControlSet001\Control\Class\*
 
 logfile.write('}\r\n')
 
-# Requires a copy of the DevManView.exe for the target architecture. Reference: http://www.nirsoft.net/utils/device_manager_view.html
+# необходима копия DevManView.exe fдля целевой архитектуры. Взять тут: http://www.nirsoft.net/utils/device_manager_view.html
 with open("DevManView.exe", "rb") as file:
     data = file.read()
 s = StringIO.StringIO(data.encode("base64"))
@@ -604,8 +611,8 @@ $devman = @'
 Invoke-Expression -Command:$devman\r\n"""
 logfile.write(DevManView)
 
-# Second attempt to fill the clipbord buffer with something, will be evolved in future versions. Windows command courtesy of a tweet by @shanselman
-# Check if there is a user supplied list of things to populate the clipboard with
+# Кароче пытаемся заполнить буфер обмена, попытка номер два
+# Проверяем есть ли список предоставленный нам пользователем для заполнения буфера обмена собственно
 if (os.path.exists("clipboard_buffer")):
   with open("clipboard_buffer", "rb") as file:
     data = file.read()
@@ -623,7 +630,7 @@ if (os.path.exists("clipboard_buffer")):
   """
   logfile.write(clipper + '\r\n')
 else:
- print '[Info] Could not find a user supplied file called: clipboard_buffer, a random string will be generated instead'
+ print '[Информация] Не удалось найти файл, предоставленный пользователем: clipboard_buffer, вместо него будет генерироваться случайная строка'
  palinka = """
  [Reflection.Assembly]::LoadWithPartialName("System.Web")
  $length = Get-Random -minimum 5 -maximum 115
@@ -633,7 +640,7 @@ else:
  """
  logfile.write(palinka)
 
-# Start notepad with random files so that the system looks more homely(?), could easily be extended to other applications
+# Запускаем блокнот со случайными файлами, что система выглядела как домашка, и можно легко свапнуть на другие приложухи
 
 langered = """
 $location = "$ENV:userprofile\Desktop\", "$ENV:userprofile\Documents\", "$ENV:homedrive\", "$ENV:userprofile\Downloads\", "$ENV:userprofile\Pictures\"
@@ -657,9 +664,9 @@ foreach ($knackered in $notepad) {
 logfile.write(langered)
 
 #################################################################
-# "First" boot changes, requires reboot in order to be finalized
+# Первая загрузка изменений, необходима перезагрузка
 ################################################################
-# Check if this has been done before ..
+# Провряем реализовано ли это было ранее...
 waldo_check = """
 if (Test-Path "kummerspeck") {
   Remove-Item "kummerspeck"
@@ -670,7 +677,7 @@ if (Test-Path "kummerspeck") {
 } \r\n"""
 logfile.write(waldo_check + '\r\n')
 
-# Microsoft Product ID (ProductId)
+# Идентификатор продукта Майкрософт
 serial = [5,3,7,5]
 o = []
 for x in serial:
@@ -681,7 +688,7 @@ logfile.write('New-ItemProperty -Path \"HKLM:\SOFTWARE\Microsoft\Windows NT\Curr
 logfile.write('New-ItemProperty -Path \"HKLM:\SOFTWARE\Microsoft\Internet Explorer\Registration\" -Name ProductId -Value "' + newProductId + '" -PropertyType "String" -force\r\n')
 logfile.write('New-ItemProperty -Path \"HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DefaultProductKey\" -Name ProductId -Value "' + newProductId + '" -PropertyType "String" -force\r\n')
 
-# Clear the Product key from the registry (prevents people from stealing it)
+# Очистка ключа продукта из реестра (запрещаем людям спиздить его)
 logfile.write('$slmgr="cscript $ENV:windir\system32\slmgr.vbs /cpky"\r\n')
 logfile.write('iex $slmgr\r\n')
 
@@ -713,7 +720,7 @@ $con2 = $convertData.Substring(62)
 $con2 = $con2 -split '(..)' | ? { $_}
 $static = @('A4','00','00','00','03','00','00','00')
 
-# Finalize
+# Последний пшик, или придаем окончательную форму чтоли.. 
 $hexDigitalProductId = $static + $convertID + $con2
 
 $hexHexDigitalProductId = @()
@@ -725,7 +732,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Nam
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Registration" -Name DigitalProductId  -Value ([byte[]] $hexHexDigitalProductId)
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DefaultProductKey" -Name DigitalProductId  -Value ([byte[]] $hexHexDigitalProductId)
 
-# Agree on the Volumeid EULA - Reference: https://peter.hahndorf.eu/blog/WorkAroundSysinternalsLicenseP.html
+# Соглашаемся с лицухой от EULA - Кароче тут: https://peter.hahndorf.eu/blog/WorkAroundSysinternalsLicenseP.html
 New-Item -Path HKCU:\Software\Sysinternals
 New-Item -Path HKCU:\Software\Sysinternals\VolumeId
 New-ItemProperty -Path HKCU:\Software\Sysinternals\VolumeId -Name EulaAccepted -Value "1" -PropertyType "Dword" -force
@@ -733,7 +740,7 @@ New-ItemProperty -Path HKCU:\Software\Sysinternals\VolumeId -Name EulaAccepted -
 """
 logfile.write(prodId +'\r\n')
 
-# Requires a copy of the VolumeId.exe - Reference: https://technet.microsoft.com/en-us/sysinternals/bb897436.aspx
+# делаем копию VolumeId.exe - Кароче тут: https://technet.microsoft.com/en-us/sysinternals/bb897436.aspx
 with open("Volumeid.exe", "rb") as file:
     data = file.read()
 s = StringIO.StringIO(data.encode("base64"))
@@ -744,7 +751,7 @@ for line in s:
 
 logfile.write("\'\r\n[IO.File]::WriteAllBytes('Volumeid.exe',[System.Convert]::FromBase64String($base64_volumeid))\r\n")
 
-# Requires a file with a list of "computer"(host) names - A start would be to use a list from this site: http://www.outpost9.com/files/WordLists.html
+# Необходим кароче список "компьютеров", Для начала, собственно будем брать список с этого сайта: http://www.outpost9.com/files/WordLists.html
 with open("computer.lst", "rb") as file:
     data = file.read()
 s = StringIO.StringIO(data.encode("base64"))
@@ -755,7 +762,7 @@ for line in s:
 
 logfile.write("\'\r\n[IO.File]::WriteAllBytes('computer.lst',[System.Convert]::FromBase64String($base64_computer))\r\n")
 
-# Requires a file with a list of "usernames" - A start would be to use a list from this site: http://www.outpost9.com/files/WordLists.html
+# Необходим кароче список "пользователей", Для начала, собственно будем брать список с этого сайта: http://www.outpost9.com/files/WordLists.html
 with open("user.lst", "rb") as file:
     data = file.read()
 s = StringIO.StringIO(data.encode("base64"))
@@ -791,7 +798,7 @@ user_computer = """
     \r\n"""
 logfile.write(user_computer + '\r\n')
 
-# Chunk of Powershell code connected to the creation of random files and the randomization of the background image
+# Кусок кода Powershell, связанный с созданием случайных файлов и рандомизацией фонового изображения собственно
 ps_blob = """
 # Pop-up
  # Windows 10 (Enterprise..) does not ask for confirmation by default
@@ -849,8 +856,8 @@ function GenFiles([string]$status) {
 
 logfile.write(ps_blob + '\r\n')
 
-# Associate file extensions. Reference: https://www.proofpoint.com/us/threat-insight/post/massive-adgholas-malvertising-campaigns-use-steganography-and-file-whitelisting-to-hide-in-plain-sight
-# Feel free to associate the file extensions with something else then Windows Media Player ..
+# Связка расширений файлов. Подробнее тут: https://www.proofpoint.com/us/threat-insight/post/massive-adgholas-malvertising-campaigns-use-steganography-and-file-whitelisting-to-hide-in-plain-sight
+# Можно так же связывать расширения файлов с чем-то еще кроме Windows Media Player..
 assocblob = """
 $assoc_ext = @('.divx=WMP11.AssocFile.WAV','.mkv=WMP11.AssocFile.WAV','.m4p=WMP11.AssocFile.WAV','.skype=WMP11.AssocFile.WAV','.flac=WMP11.AssocFile.WAV','.psd=WMP11.AssocFile.WAV','.torrent=WMP11.AssocFile.WAV')
 $cmd = 'cmd /c'
@@ -862,8 +869,7 @@ foreach ($z in $assoc_ext) {
 """
 logfile.write(assocblob + '\r\n')
 
-# De-associate file extensions. Reference: https://www.proofpoint.com/us/threat-insight/post/massive-adgholas-malvertising-campaigns-use-steganography-and-file-whitelisting-to-hide-in-plain-sight
-# Disabled by default in this version, enable if you wish
+# де асоциация кароче, отключил по умолчанию, включите если нужно
 #assocblob2 = """
 #$assoc_remove = @('.py=','.saz=','.pcap=,'.chls=')
 #$cmd = 'cmd /c'
@@ -874,14 +880,14 @@ logfile.write(assocblob + '\r\n')
 #"""
 #logfile.write(assocblob2 + '\r\n')
 
-# Sanitize
+# Подчищаем за собой
 logfile.write('Remove-Item Volumeid.exe, user.lst, computer.lst, DevManView.exe\r\n')
 logfile.write('Remove-Item -Path HKCU:\Software\Sysinternals\VolumeID -Recurse\r\n')
 logfile.write('Remove-Item -Path HKCU:\Software\Sysinternals -Recurse\r\n')
-# Reboot notification
+# Уведомления о ребуте
 logfile.write('[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")\r\n')
 logfile.write('[System.Windows.Forms.MessageBox]::Show("The computer needs to reboot")\r\n')
 logfile.write('Restart-Computer\r\n')
 
 logfile.close()
-print '[*] Finished: A Powershell file has been created, named:', file_name
+print '[*] Завершенно: Создан файл Powershell, который называется:', file_name
